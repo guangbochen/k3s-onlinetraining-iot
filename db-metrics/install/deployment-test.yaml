@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-metrics
+  labels:
+    app: db-metrics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-metrics
+  template:
+    metadata:
+      labels:
+        app: db-metrics
+    spec:
+      containers:
+      - name: metrics
+        image: guangbo/db-metrics:dev
+        env:
+        - name: INFLUXDB_SERVER
+          value: "influxdb.influxdb"
+        - name: INFLUXDB_PORT
+          value: "8086"
+        - name: MQTT_SERVER
+          value: "emqx.emqx:1883"
+        - name: MQTT_TOPIC
+          value: "$cattle/device/#"
+        - name: INFLUXDB_USERNAME
+          value: "admin"
+        - name: INFLUXDB_PASSWORD
+          value: "dadmin"

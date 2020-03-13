@@ -1,0 +1,7 @@
+questions:
+- variable: replicas
+  default: 1
+  description: "Number of emqx pod"
+  type: int
+  label: EMQX Replicas
+  group: "Settings"

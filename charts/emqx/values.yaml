@@ -1,0 +1,71 @@
+# Default values for emqx.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: default
+apiserver: https://kubernetes.default.svc:443
+
+# It is recommended to have odd number of nodes in a cluster, otherwise the emqx cluster cannot be automatically healed in case of net-split.
+replicas: 3 
+image: emqx/emqx:latest
+imagePullPolicy: IfNotPresent
+nodeSelector: {}
+
+persistence:
+  enabled: false
+  size: 20Mi
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  ## Existing PersistentVolumeClaims
+  ## The value is evaluated as a template
+  ## So, for example, the name can depend on .Release or .Chart
+  # existingClaim: ""
+
+resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
+
+## The address type is used to extract host from k8s service.
+##
+## Value: ip | dns | hostname
+## Note：Hostname is only supported after v3.2.1
+emqxAddressType: ip 
+
+# EMQX configuration item, see the documentation (https://github.com/emqx/emqx-docker#emq-x-configuration)
+emqxConfig:
+  ## The default HTTP API port for releases after 4.0-rc.1 is changed from 8080 to 8081, specifying port 8080 here for compatibility with new and old versions
+  EMQX_MANAGEMENT__LISTENER__HTTP: "8080"
+
+# EMQX Enterprise Edition requires manual creation of a Secret containing the licensed content. Write the name of Secret to the value of "emqxLicneseSecretName"
+# Example:
+#   kubectl create secret generic emqx-license-secret-name --from-file=/path/to/emqx.lic
+emqxLicneseSecretName:
+
+service:
+  type: ClusterIP
+
+tolerations: []
+
+affinity: {}
+
+## TODO:
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+

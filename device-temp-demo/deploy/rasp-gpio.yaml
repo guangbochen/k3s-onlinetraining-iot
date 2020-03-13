@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pi-gpio
+  labels:
+    app: pi-gpio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pi-gpio
+  template:
+    metadata:
+      labels:
+        app: pi-gpio
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        protocol: bluetooth
+      containers:
+      - name: device
+        image: guangbo/gpio-light:arm
+        securityContext:
+          privileged: true
+        env:
+        - name: DEVICE_MQTT
+          value: '{"server":"3.112.151.109:32311","topic":"$cattle/device","qos":0}'
+        - name: DEVICE_NAME
+          value: "MJ_HT_V1"

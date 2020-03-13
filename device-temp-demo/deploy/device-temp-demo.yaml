@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-temp-demo
+  labels:
+    app: device-temp-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device-temp-demo
+  template:
+    metadata:
+      labels:
+        app: device-temp-demo
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        protocol: bluetooth
+      containers:
+      - name: device
+        image: guangbo/device-temp-demo:arm
+        securityContext:
+          privileged: true
+        env:
+        - name: DEVICE_MQTT
+          value: '{"server":"3.112.151.109:32311","topic":"$cattle/device","qos":0}'
+        - name: DEVICE_NAME
+          value: "MJ_HT_V1"
