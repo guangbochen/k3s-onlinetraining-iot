@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"log"
 	"os"
 	"time"
@@ -105,6 +106,11 @@ func run(c *cli.Context) {
 		fmt.Println("Done")
 		fmt.Println("Sleep for 10 seconds")
 		time.Sleep(10 * time.Second)
+	}
+
+	// disconnect mqtt cli
+	if err := cli.Disconnect(); err != nil {
+		logrus.Fatalln(err)
 	}
 }
 
